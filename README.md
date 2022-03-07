@@ -1,18 +1,15 @@
 # Scene Graph Benchmark in Pytorch
 
-[![LICENSE](https://img.shields.io/badge/license-MIT-green)](https://github.com/KaihuaTang/Scene-Graph-Benchmark.pytorch/blob/master/LICENSE)
-[![Python](https://img.shields.io/badge/python-3.7-blue.svg)](https://www.python.org/)
-![PyTorch](https://img.shields.io/badge/pytorch-1.2.0-%237732a8)
+[![LICENSE](https://img.shields.io/badge/license-MIT-green)](https://github.com/dongxingning/SHA_GCL_for_SGG/blob/master/LICENSE)
+[![Python](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/)
+![PyTorch](https://img.shields.io/badge/pytorch-1.6.0-%237732a8)
 
-Our paper [Unbiased Scene Graph Generation from Biased Training](https://arxiv.org/abs/2002.11949) has been accepted by CVPR 2020 (Oral).
+This repository contains the code for our paper [Stacked Hybrid-Attention and Group Collaborative Learning for Unbiased
+Scene Graph Generation](), which has been accepted by CVPR 2022.
 
 ## Recent Updates
 
-- [x] 2020.06.23 Add no graph constraint mean Recall@K (ng-mR@K) and no graph constraint Zero-Shot Recall@K (ng-zR@K) [\[link\]](METRICS.md#explanation-of-our-metrics)
-- [x] 2020.06.23 Allow scene graph detection (SGDet) on custom images [\[link\]](#SGDet-on-custom-images)
-- [x] 2020.07.21 Change scene graph detection output on custom images to json files [\[link\]](#SGDet-on-custom-images)
-- [x] 2020.07.21 Visualize detected scene graphs of custom images [\[link\]](#Visualize-Detected-SGs-of-Custom-Images)
-- [ ] TODO: Using [Background-Exempted Inference](https://github.com/KaihuaTang/Long-Tailed-Recognition.pytorch/tree/master/lvis1.0#background-exempted-inference) to improve the quality of TDE Scene Graph
+- [x] 2022.03.07 Code Release
 
 ## Contents
 
@@ -34,47 +31,21 @@ Our paper [Unbiased Scene Graph Generation from Biased Training](https://arxiv.o
 13. [Frequently Asked Questions](#frequently-asked-questions)
 14. [Citations](#Citations)
 
-## Overview
 
-This project aims to build a new CODEBASE of Scene Graph Generation (SGG), and it is also a Pytorch implementation of the paper [Unbiased Scene Graph Generation from Biased Training](https://arxiv.org/abs/2002.11949). The previous widely adopted SGG codebase [neural-motifs](https://github.com/rowanz/neural-motifs) is detached from the recent development of Faster/Mask R-CNN. Therefore, I decided to build a scene graph benchmark on top of the well-known [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) project and define relationship prediction as an additional roi_head. By the way, thanks to their elegant framework, this codebase is much more novice-friendly and easier to read/modify for your own projects than previous neural-motifs framework(at least I hope so). It is a pity that when I was working on this project, the [detectron2](https://github.com/facebookresearch/detectron2) had not been released, but I think we can consider [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) as a more stable version with less bugs, hahahaha. I also introduce all the old and new metrics used in SGG, and clarify two common misunderstandings in SGG metrics in [METRICS.md](METRICS.md), which cause abnormal results in some papers.
 
 ### Benefit from the up-to-date Faster R-CNN in [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark), this codebase achieves new state-of-the-art Recall@k on SGCls & SGGen (by 2020.2.16) through the reimplemented VCTree using two 1080ti GPUs and batch size 8:
 
-Models | SGGen R@20 | SGGen R@50 | SGGen R@100 | SGCls R@20 | SGCls R@50 | SGCls R@100 | PredCls R@20 | PredCls R@50 | PredCls R@100
--- | -- | -- | -- | -- | -- | -- | -- | -- | -- 
-VCTree | 24.53 | 31.93 | 36.21 | 42.77 | 46.67 | 47.64 | 59.02 | 65.42 | 67.18
-
-Note that all results of VCTree should be better than what we reported in [Unbiased Scene Graph Generation from Biased Training](https://arxiv.org/abs/2002.11949), because we optimized the tree construction network after the publication.
-
-### The illustration of the Unbiased SGG from 'Unbiased Scene Graph Generation from Biased Training'
-
-![alt text](demo/teaser_figure.png "from 'Unbiased Scene Graph Generation from Biased Training'")
-
 ## Installation
 
-Check [INSTALL.md](INSTALL.md) for installation instructions.
+Check [INSTALL.md](INSTALL.md) for installation instructions, the recommended configuration is cuda-10.1 & pytorch-1.6.  
 
 ## Dataset
 
-Check [DATASET.md](DATASET.md) for instructions of dataset preprocessing.
-
-## Metrics and Results **(IMPORTANT)**
-Explanation of metrics in our toolkit and reported results are given in [METRICS.md](METRICS.md)
+Check [DATASET.md](DATASET.md) for instructions of dataset preprocessing (VG & GQA).
 
 ## Pretrained Models
 
-Since we tested many SGG models in our paper [Unbiased Scene Graph Generation from Biased Training](https://arxiv.org/abs/2002.11949), I won't upload all the pretrained SGG models here. However, you can download the [pretrained Faster R-CNN](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21779870&authkey=AH5CPVb9g5E67iQ) we used in the paper, which is the most time consuming step in the whole training process (it took 4 2080ti GPUs). As to the SGG model, you can follow the rest instructions to train your own, which only takes 2 GPUs to train each SGG model. The results should be very close to the reported results given in [METRICS.md](METRICS.md)
-
-After you download the [Faster R-CNN model](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21779870&authkey=AH5CPVb9g5E67iQ), please extract all the files to the directory `/home/username/checkpoints/pretrained_faster_rcnn`. To train your own Faster R-CNN model, please follow the next section.
-
-The above pretrained Faster R-CNN model achives 38.52/26.35/28.14 mAp on VG train/val/test set respectively.
-
-## Faster R-CNN pre-training
-The following command can be used to train your own Faster R-CNN model:
-```bash
-CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --master_port 10001 --nproc_per_node=4 tools/detector_pretrain_net.py --config-file "configs/e2e_relation_detector_X_101_32_8_FPN_1x.yaml" SOLVER.IMS_PER_BATCH 8 TEST.IMS_PER_BATCH 4 DTYPE "float16" SOLVER.MAX_ITER 50000 SOLVER.STEPS "(30000, 45000)" SOLVER.VAL_PERIOD 2000 SOLVER.CHECKPOINT_PERIOD 2000 MODEL.RELATION_ON False OUTPUT_DIR /home/kaihua/checkpoints/pretrained_faster_rcnn SOLVER.PRE_VAL False
-```
-where ```CUDA_VISIBLE_DEVICES``` and ```--nproc_per_node``` represent the id of GPUs and number of GPUs you use, ```--config-file``` means the config we use, where you can change other parameters. ```SOLVER.IMS_PER_BATCH``` and ```TEST.IMS_PER_BATCH``` are the training and testing batch size respectively, ```DTYPE "float16"``` enables Automatic Mixed Precision supported by [APEX](https://github.com/NVIDIA/apex), ```SOLVER.MAX_ITER``` is the maximum iteration, ```SOLVER.STEPS``` is the steps where we decay the learning rate, ```SOLVER.VAL_PERIOD``` and ```SOLVER.CHECKPOINT_PERIOD``` are the periods of conducting val and saving checkpoint, ```MODEL.RELATION_ON``` means turning on the relationship head or not (since this is the pretraining phase for Faster R-CNN only, we turn off the relationship head),  ```OUTPUT_DIR``` is the output directory to save checkpoints and log (considering `/home/username/checkpoints/pretrained_faster_rcnn`), ```SOLVER.PRE_VAL``` means whether we conduct validation before training or not.
+For VG dataset, the pretrained object detector we used is provided by [Scene-Graph-Benchmark](https://github.com/KaihuaTang/Scene-Graph-Benchmark.pytorch), [the download link](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21779870&authkey=AH5CPVb9g5E67iQ). For GQA dataset, we pretrained a new object detector, you can get it from [this link](). However, we recommend you to pretrain a new one on GQA since we do not pretrain it for multiple times to choose the best model.
 
 
 ## Scene Graph Generation as RoI_Head
@@ -208,40 +179,6 @@ The counterfactual inference is not only applicable to SGG. Actually, my collegu
 - For those nodes having multiple input branches in the causal graph, it's crucial to choose the right fusion function. We tested lots of fusion funtions and only found the SUM fusion and GATE fusion consistently working well. The fusion function like element-wise production won't work for TDE analysis in most of the cases, because the causal influence from multiple branches can not be linearly separated anymore, which means, it's no longer an identifiable 'influence'.
 - For those final predictions having multiple input branches in the causal graph, it may also need to add auxiliary losses for each branch to stablize the causal influence of each independent branch. Because when these branches have different convergent speeds, those hard branches would easily be learned as unimportant tiny floatings that depend on the fastest/stablest converged branch. Auxiliary losses allow different branches to have independent and equal influences.
 
-## Frequently Asked Questions:
+## Acknowledgment
 
-1. **Q:** Fail to load the given checkpoints.
-**A:** The model to be loaded is based on the last_checkpoint file in the OUTPUT_DIR path. If you fail to load the given pretained checkpoints, it probably because the last_checkpoint file still provides the path in my workstation rather than your own path.
-
-2. **Q:** AssertionError on "assert len(fns) == 108073"
-**A:** If you are working on VG dataset, it is probably caused by the wrong DATASETS (data path) in maskrcnn_benchmark/config/paths_catlog.py. If you are working on your custom datasets, just comment out the assertions.
-
-3. **Q:** AssertionError on "l_batch == 1" in model_motifs.py
-**A:** The original MOTIFS code only supports evaluation on 1 GPU. Since my reimplemented motifs is based on their code, I keep this assertion to make sure it won't cause any unexpected errors.
-
-## Citations
-
-If you find this project helps your research, please kindly consider citing our project or papers in your publications.
-
-```
-@misc{tang2020sggcode,
-title = {A Scene Graph Generation Codebase in PyTorch},
-author = {Tang, Kaihua},
-year = {2020},
-note = {\url{https://github.com/KaihuaTang/Scene-Graph-Benchmark.pytorch}},
-}
-
-@inproceedings{tang2018learning,
-  title={Learning to Compose Dynamic Tree Structures for Visual Contexts},
-  author={Tang, Kaihua and Zhang, Hanwang and Wu, Baoyuan and Luo, Wenhan and Liu, Wei},
-  booktitle= "Conference on Computer Vision and Pattern Recognition",
-  year={2019}
-}
-
-@inproceedings{tang2020unbiased,
-  title={Unbiased Scene Graph Generation from Biased Training},
-  author={Tang, Kaihua and Niu, Yulei and Huang, Jianqiang and Shi, Jiaxin and Zhang, Hanwang},
-  booktitle= "Conference on Computer Vision and Pattern Recognition",
-  year={2020}
-}
-```
+Our code is on top of [Scene-Graph-Benchmark](https://github.com/KaihuaTang/Scene-Graph-Benchmark.pytorch), we sincerely thank them for their well-designed codebase.
