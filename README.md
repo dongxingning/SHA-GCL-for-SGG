@@ -36,12 +36,12 @@ datasets
       |--.... (glove files, will autoly download)
     |--VG_100K
       |--.... (images)
-    |--gqa
-      |--images
-        |--.... (images)
-      |--GQA_200_ID_Info.json
-      |--GQA_200_Train.json
-      |--GQA_200_Test.json
+  |--gqa
+    |--images
+      |--.... (images)
+    |--GQA_200_ID_Info.json
+    |--GQA_200_Train.json
+    |--GQA_200_Test.json
 ```
 
 ### Choose a dataset
