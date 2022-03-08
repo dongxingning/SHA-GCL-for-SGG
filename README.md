@@ -1,4 +1,4 @@
-# Scene Graph Benchmark in Pytorch
+# Stacked Hybrid-Attention and Group Collaborative Learning for Unbiased Scene Graph Generation in Pytorch
 
 [![LICENSE](https://img.shields.io/badge/license-MIT-green)](https://github.com/dongxingning/SHA_GCL_for_SGG/blob/master/LICENSE)
 [![Python](https://img.shields.io/badge/python-3.6-blue.svg)](https://www.python.org/)
