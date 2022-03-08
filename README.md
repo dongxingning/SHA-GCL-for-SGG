@@ -36,6 +36,9 @@ datasets
       |--.... (glove files, will autoly download)
     |--VG_100K
       |--.... (images)
+    |--VG-SGG-with-attri.h5 
+    |--VG-SGG-dicts-with-attri.json
+    |--image_data.json    
   |--gqa
     |--images
       |--.... (images)
