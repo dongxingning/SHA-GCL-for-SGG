@@ -21,6 +21,29 @@ For VG dataset, the pretrained object detector we used is provided by [Scene-Gra
 
 ## Perform training on Scene Graph Generation
 
+### Set the dataset path
+
+First, please refer to the ```SHA_GCL_extra/dataset_path.py``` and set the ```datasets_path``` to be your dataset path, and organize all the files like this:
+```bash
+datasets
+  |-- vg
+    |--detector_model
+      |--pretrained_faster_rcnn
+        |--model_final.pth
+      |--GQA
+        |--model_final_from_vg.pth       
+    |--glove
+      |--.... (glove files, will autoly download)
+    |--VG_100K
+      |--.... (images)
+    |--gqa
+      |--images
+        |--.... (images)
+      |--GQA_200_ID_Info.json
+      |--GQA_200_Train.json
+      |--GQA_200_Test.json
+```
+
 ### Choose a dataset
 
 You can choose the training/testing dataset by setting the following parameter:
