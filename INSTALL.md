@@ -24,9 +24,9 @@ conda create --name SHA_GCL python=3.6
 source activate SHA_GCL
 
 # this installs the right pip and dependencies for the fresh python
-pip install ipython
-pip install scipy
-pip install h5py
+conda install ipython
+conda install scipy
+conda install h5py
 
 # scene_graph_benchmark and coco api dependencies
 pip install ninja yacs cython matplotlib tqdm opencv-python overrides
