@@ -3,6 +3,7 @@
 Most of the requirements of this projects are exactly the same as [Scene-Graph-Benchmark](https://github.com/KaihuaTang/Scene-Graph-Benchmark.pytorch) and [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark). If you have any problem of your environment, you should check their [issues page](https://github.com/facebookresearch/maskrcnn-benchmark/issues) first. Hope you will find the answer.
 
 ### Requirements:
+- Python >= 3.6 (Mine 3.6)
 - PyTorch >= 1.2 (Mine 1.6.0 (CUDA 10.1))
 - torchvision >= 0.4 (Mine 0.7.0 (CUDA 10.1))
 - cocoapi
