@@ -52,7 +52,7 @@ python setup.py install --cuda_ext --cpp_ext
 # install PyTorch Detection
 cd $INSTALL_DIR
 git clone https://github.com/dongxingning/SHA_GCL_for_SGG.git
-cd SHA_GCL_for_SGG
+cd SHA-GCL-for-SGG
 
 # the following will install the lib with
 # symbolic links, so that you can modify
