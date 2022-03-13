@@ -19,7 +19,7 @@ Most of the requirements of this projects are exactly the same as [Scene-Graph-B
 # for that, check that `which conda`, `which pip` and `which python` points to the
 # right path. From a clean conda env, this is what you need to do
 
-conda create --name SHA_GCL
+onda create --name SHA_GCL python=3.6
 source activate SHA_GCL
 
 # this installs the right pip and dependencies for the fresh python
