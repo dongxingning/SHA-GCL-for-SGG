@@ -17,7 +17,7 @@ Check [DATASET.md](DATASET.md) for instructions of dataset preprocessing (VG & G
 
 ## Pretrained Models
 
-For VG dataset, the pretrained object detector we used is provided by [Scene-Graph-Benchmark](https://github.com/KaihuaTang/Scene-Graph-Benchmark.pytorch), you can download it from [this link](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21779870&authkey=AH5CPVb9g5E67iQ). For GQA dataset, we pretrained a new object detector, you can get it from [this link](https://1drv.ms/u/s!AjK8-t5JiDT1kxBfihou2smfXFV9?e=VtyoR7). However, we recommend you to pretrain a new one on GQA since we do not pretrain it for multiple times to choose the best model.
+For VG dataset, the pretrained object detector we used is provided by [Scene-Graph-Benchmark](https://github.com/KaihuaTang/Scene-Graph-Benchmark.pytorch), you can download it from [this link](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21779870&authkey=AH5CPVb9g5E67iQ). For GQA dataset, we pretrained a new object detector, you can get it from [this link](https://1drv.ms/u/s!AjK8-t5JiDT1kxBfihou2smfXFV9?e=VtyoR7). However, we recommend you to pretrain a new one on GQA since we do not pretrain it for multiple times to choose the best pre-trained model for extracting offline region-level features.
 
 ## Perform training on Scene Graph Generation
 
