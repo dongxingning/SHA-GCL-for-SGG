@@ -134,7 +134,7 @@ If you want to get more training models in our paper, please email me at ```dong
 
 ## Citation
 
-If you have any problem when reading the paper or reproducing the code, please feel free to commit issue or contact us (E-mail: ```dongxingning1998@gmail.com```).
+We welcome you to commit issue or contact us (E-mail: ```dongxingning1998@gmail.com```) if you have any problem when reading the paper or reproducing the code.
 
 ## Acknowledgment
 
