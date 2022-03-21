@@ -5,7 +5,7 @@
 ![PyTorch](https://img.shields.io/badge/pytorch-1.6.0-%237732a8)
 
 This repository contains the code for our paper [Stacked Hybrid-Attention and Group Collaborative Learning for Unbiased
-Scene Graph Generation](), which has been accepted by CVPR 2022.
+Scene Graph Generation](http://arxiv.org/abs/2203.09811), which has been accepted by CVPR 2022.
 
 ## Installation
 
@@ -133,6 +133,8 @@ CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --master_port 10025 --
 If you want to get more training models in our paper, please email me at ```dongxingning1998@gmail.com```.
 
 ## Citation
+
+
 
 We welcome you to commit issue or contact us (E-mail: ```dongxingning1998@gmail.com```) if you have any problem when reading the paper or reproducing the code.
 
