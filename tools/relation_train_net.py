@@ -5,6 +5,8 @@ Basic training script for PyTorch
 
 # Set up custom environment before nearly anything else is imported
 # NOTE: this should be the first import (no not reorder)
+import sys
+sys.path.append(r"/home/zhanghao/code/SGG/SHA_GCL_for_SGG")
 from maskrcnn_benchmark.utils.env import setup_environment  # noqa F401 isort:skip
 
 import argparse
@@ -367,10 +369,12 @@ def run_test(cfg, model, distributed, logger, is_best=False):
 
 
 def main():
+    os.environ["CUDA_VISIBLE_DEVICES"] = "1"
     parser = argparse.ArgumentParser(description="PyTorch Relation Detection Training")
     parser.add_argument(
         "--config-file",
-        default="configs/SHA_GCL_e2e_relation_X_101_32_8_FPN_1x.yaml",
+        #default="configs/SHA_GCL_e2e_relation_X_101_32_8_FPN_1x.yaml",
+        default="/home/zhanghao/code/SGG/SHA_GCL_for_SGG/configs/zh_train.yaml",
         metavar="FILE",
         help="path to config file",
         type=str,

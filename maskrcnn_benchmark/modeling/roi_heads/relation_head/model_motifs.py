@@ -250,22 +250,40 @@ class LSTMContext(nn.Module):
 
         # TODO Kaihua Tang
         # AlternatingHighwayLSTM is invalid for pytorch 1.0
+        # self.obj_ctx_rnn = torch.nn.LSTM(
+        #         input_size=self.obj_dim+self.embed_dim + 128,
+        #         hidden_size=self.hidden_dim,
+        #         num_layers=self.nl_obj,
+        #         dropout=self.dropout_rate if self.nl_obj > 1 else 0,
+        #         bidirectional=True)
+        # self.decoder_rnn = DecoderRNN(self.cfg, self.obj_classes, embed_dim=self.embed_dim,
+        #         inputs_dim=self.hidden_dim + self.obj_dim + self.embed_dim + 128,
+        #         hidden_dim=self.hidden_dim,
+        #         rnn_drop=self.dropout_rate)
+        # self.edge_ctx_rnn = torch.nn.LSTM(
+        #         input_size=self.embed_dim + self.hidden_dim + self.obj_dim,
+        #         hidden_size=self.hidden_dim,
+        #         num_layers=self.nl_edge,
+        #         dropout=self.dropout_rate if self.nl_edge > 1 else 0,
+        #         bidirectional=True)
+        # # map bidirectional hidden states of dimension self.hidden_dim*2 to self.hidden_dim
+
         self.obj_ctx_rnn = torch.nn.LSTM(
-                input_size=self.obj_dim+self.embed_dim + 128,
-                hidden_size=self.hidden_dim,
-                num_layers=self.nl_obj,
-                dropout=self.dropout_rate if self.nl_obj > 1 else 0,
-                bidirectional=True)
+            input_size=self.obj_dim  + 128,
+            hidden_size=self.hidden_dim,
+            num_layers=self.nl_obj,
+            dropout=self.dropout_rate if self.nl_obj > 1 else 0,
+            bidirectional=True)
         self.decoder_rnn = DecoderRNN(self.cfg, self.obj_classes, embed_dim=self.embed_dim,
-                inputs_dim=self.hidden_dim + self.obj_dim + self.embed_dim + 128,
-                hidden_dim=self.hidden_dim,
-                rnn_drop=self.dropout_rate)
+                                      inputs_dim=self.hidden_dim  + 128,
+                                      hidden_dim=self.hidden_dim,
+                                      rnn_drop=self.dropout_rate)
         self.edge_ctx_rnn = torch.nn.LSTM(
-                input_size=self.embed_dim + self.hidden_dim + self.obj_dim,
-                hidden_size=self.hidden_dim,
-                num_layers=self.nl_edge,
-                dropout=self.dropout_rate if self.nl_edge > 1 else 0,
-                bidirectional=True)
+            input_size= self.embed_dim+self.hidden_dim + self.obj_dim,
+            hidden_size=self.hidden_dim,
+            num_layers=self.nl_edge,
+            dropout=self.dropout_rate if self.nl_edge > 1 else 0,
+            bidirectional=True)
         # map bidirectional hidden states of dimension self.hidden_dim*2 to self.hidden_dim
         self.lin_obj_h = nn.Linear(self.hidden_dim*2, self.hidden_dim)
         self.lin_edge_h = nn.Linear(self.hidden_dim*2, self.hidden_dim)
@@ -275,9 +293,13 @@ class LSTMContext(nn.Module):
         self.effect_analysis = config.MODEL.ROI_RELATION_HEAD.CAUSAL.EFFECT_ANALYSIS
 
         if self.effect_analysis:
-            self.register_buffer("untreated_dcd_feat", torch.zeros(self.hidden_dim + self.obj_dim + self.embed_dim + 128))
-            self.register_buffer("untreated_obj_feat", torch.zeros(self.obj_dim+self.embed_dim + 128))
-            self.register_buffer("untreated_edg_feat", torch.zeros(self.embed_dim + self.obj_dim))
+            # self.register_buffer("untreated_dcd_feat", torch.zeros(self.hidden_dim + self.obj_dim + self.embed_dim + 128))
+            # self.register_buffer("untreated_obj_feat", torch.zeros(self.obj_dim+self.embed_dim + 128))
+            # self.register_buffer("untreated_edg_feat", torch.zeros(self.embed_dim + self.obj_dim))
+
+            self.register_buffer("untreated_dcd_feat",torch.zeros(self.hidden_dim + self.obj_dim  + 128))
+            self.register_buffer("untreated_obj_feat", torch.zeros(self.obj_dim  + 128))
+            self.register_buffer("untreated_edg_feat", torch.zeros(self.embed_dim+ self.obj_dim))
 
     def sort_rois(self, proposals):
         c_x = center_x(proposals)
@@ -372,7 +394,8 @@ class LSTMContext(nn.Module):
         if all_average and self.effect_analysis and (not self.training):
             obj_pre_rep = self.untreated_obj_feat.view(1, -1).expand(batch_size, -1)
         else:
-            obj_pre_rep = cat((x, obj_embed, pos_embed), -1)
+            #obj_pre_rep = cat((x, obj_embed, pos_embed), -1)
+            obj_pre_rep = cat((x,pos_embed), -1)
 
         boxes_per_cls = None
         if self.mode == 'sgdet' and not self.training:
@@ -381,7 +404,7 @@ class LSTMContext(nn.Module):
         # object level contextual feature
         obj_dists, obj_preds, obj_ctx, perm, inv_perm, ls_transposed = self.obj_ctx(obj_pre_rep, proposals, obj_labels, boxes_per_cls, ctx_average=ctx_average)
         # edge level contextual feature
-        obj_embed2 = self.obj_embed2(obj_preds.long())
+        obj_embed2 = self.obj_embed2(obj_preds.long())   #obj_embed2 是 embed维度
 
         if (all_average or ctx_average) and self.effect_analysis and (not self.training):
             obj_rel_rep = cat((self.untreated_edg_feat.view(1, -1).expand(batch_size, -1), obj_ctx), dim=-1)

@@ -27,13 +27,13 @@ class GroupedBatchSampler(BatchSampler):
                 "sampler should be an instance of "
                 "torch.utils.data.Sampler, but got sampler={}".format(sampler)
             )
-        self.sampler = sampler
-        self.group_ids = torch.as_tensor(group_ids)
+        self.sampler = sampler   #randomsampler
+        self.group_ids = torch.as_tensor(group_ids)  #tensor 57723
         assert self.group_ids.dim() == 1
-        self.batch_size = batch_size
+        self.batch_size = batch_size   #8
         self.drop_uneven = drop_uneven
 
-        self.groups = torch.unique(self.group_ids).sort(0)[0]
+        self.groups = torch.unique(self.group_ids).sort(0)[0]  #Tensor:2      1 0
 
         self._can_reuse_batches = False
 

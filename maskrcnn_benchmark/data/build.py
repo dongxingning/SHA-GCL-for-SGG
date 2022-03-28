@@ -82,10 +82,10 @@ def build_dataset(cfg, dataset_list, transforms, dataset_catalog, is_train=True)
         raise RuntimeError(
             "dataset_list should be a list of strings, got {}".format(dataset_list)
         )
-    datasets = []
+    datasets = []    #dataset_list    {tuple:1}
     for dataset_name in dataset_list:
-        data = dataset_catalog.get(dataset_name, cfg)
-        factory = getattr(D, data["factory"])
+        data = dataset_catalog.get(dataset_name, cfg)  #{dict:2}  {'factory': 'VGDataset', 'args': {'img_dir': '/home/share/dongxingning/datasets/vg/VG_100K', 'roidb_file': '/home/share/dongxingning/datasets/vg/VG-SGG-with-attri.h5', 'dict_file': '/home/share/dongxingning/datasets/vg/VG-SGG-dicts-with-attri.json', 'image_file': '/home/share/dongxingning/datasets/vg/image_data.json', 'split': 'train', 'filter_non_overlap': False, 'filter_empty_rels': True, 'flip_aug': False, 'custom_eval': False, 'custom_path': '.'}}
+        factory = getattr(D, data["factory"])# {str}  'VGDataset'
         args = data["args"]
         # for COCODataset, we want to remove images without annotations
         # during training
@@ -95,7 +95,7 @@ def build_dataset(cfg, dataset_list, transforms, dataset_catalog, is_train=True)
             args["use_difficult"] = not is_train
         args["transforms"] = transforms
         # make dataset from factory
-        dataset = factory(**args)
+        dataset = factory(**args) #VGDataset:57723
         datasets.append(dataset)
 
     # for testing, return a list of datasets
@@ -122,8 +122,8 @@ def make_data_sampler(dataset, shuffle, distributed):
 
 def _quantize(x, bins):
     bins = copy.copy(bins)
-    bins = sorted(bins)
-    quantized = list(map(lambda y: bisect.bisect_right(bins, y), x))
+    bins = sorted(bins)  #{list:1}
+    quantized = list(map(lambda y: bisect.bisect_right(bins, y), x))  #实现分组 返回{list：57723} 全部是1，0  如果是1表示纵横比>1  否则<1
     return quantized
 
 
@@ -142,9 +142,9 @@ def make_batch_data_sampler(
     if aspect_grouping:
         if not isinstance(aspect_grouping, (list, tuple)):
             aspect_grouping = [aspect_grouping]
-        aspect_ratios = _compute_aspect_ratios(dataset)
-        group_ids = _quantize(aspect_ratios, aspect_grouping)
-        batch_sampler = samplers.GroupedBatchSampler(
+        aspect_ratios = _compute_aspect_ratios(dataset)   #计算dataset每一张（57723）纵横比     {list:57723}
+        group_ids = _quantize(aspect_ratios, aspect_grouping)  #{list:57723}   全为1 0
+        batch_sampler = samplers.GroupedBatchSampler(     #GroupedBatchSampler
             sampler, group_ids, images_per_batch, drop_uneven=False
         )
     else:
@@ -160,17 +160,17 @@ def make_batch_data_sampler(
 
 def make_data_loader(cfg, mode='train', is_distributed=False, start_iter=0):
     assert mode in {'train', 'val', 'test'}
-    num_gpus = get_world_size()
+    num_gpus = get_world_size()  #1
     is_train = mode == 'train'
     if is_train:
-        images_per_batch = cfg.SOLVER.IMS_PER_BATCH
+        images_per_batch = cfg.SOLVER.IMS_PER_BATCH   #8
         assert (
             images_per_batch % num_gpus == 0
         ), "SOLVER.IMS_PER_BATCH ({}) must be divisible by the number of GPUs ({}) used.".format(
             images_per_batch, num_gpus)
-        images_per_gpu = images_per_batch // num_gpus
+        images_per_gpu = images_per_batch // num_gpus   #8
         shuffle = True
-        num_iters = cfg.SOLVER.MAX_ITER
+        num_iters = cfg.SOLVER.MAX_ITER   #60000
     else:
         images_per_batch = cfg.TEST.IMS_PER_BATCH
         assert (
@@ -198,7 +198,7 @@ def make_data_loader(cfg, mode='train', is_distributed=False, start_iter=0):
     # group images which have similar aspect ratio. In this case, we only
     # group in two cases: those with width / height > 1, and the other way around,
     # but the code supports more general grouping strategy
-    aspect_grouping = [1] if cfg.DATALOADER.ASPECT_RATIO_GROUPING else []
+    aspect_grouping = [1] if cfg.DATALOADER.ASPECT_RATIO_GROUPING else []  # aspect_grouping = [1]
 
     paths_catalog = import_file(
         "maskrcnn_benchmark.config.paths_catalog", cfg.PATHS_CATALOG, True
@@ -225,7 +225,7 @@ def make_data_loader(cfg, mode='train', is_distributed=False, start_iter=0):
     # If bbox aug is enabled in testing, simply set transforms to None and we will apply transforms later
     transforms = None if not is_train and cfg.TEST.BBOX_AUG.ENABLED else build_transforms(cfg, is_train)
     datasets = build_dataset(cfg, dataset_list, transforms, DatasetCatalog, is_train)
-
+    #datasets    {list:1}
     if is_train:
         # save category_id to label name mapping
         save_labels(datasets, cfg.OUTPUT_DIR)
@@ -239,10 +239,10 @@ def make_data_loader(cfg, mode='train', is_distributed=False, start_iter=0):
         sampler = make_data_sampler(dataset, shuffle, is_distributed)
         batch_sampler = make_batch_data_sampler(
             dataset, sampler, aspect_grouping, images_per_gpu, num_iters, start_iter
-        )
+        )   #IterationBasedBatchSampler
         collator = BBoxAugCollator() if not is_train and cfg.TEST.BBOX_AUG.ENABLED else \
             BatchCollator(cfg.DATALOADER.SIZE_DIVISIBILITY)
-        num_workers = cfg.DATALOADER.NUM_WORKERS
+        num_workers = cfg.DATALOADER.NUM_WORKERS  #4
         data_loader = torch.utils.data.DataLoader(
             dataset,
             num_workers=num_workers,

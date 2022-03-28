@@ -107,7 +107,7 @@ class DatasetCatalog(object):
             "ann_file": "cityscapes/annotations/instancesonly_filtered_gtFine_test.json"
         },
         "VG_stanford_filtered": {
-            "img_dir": datasets_path+"datasets/vg/VG_100K",
+            "img_dir": datasets_path+"datasets/svg/VG_100K",
             "roidb_file": datasets_path+"datasets/vg/VG-SGG.h5",
             "dict_file": datasets_path+"datasets/vg/VG-SGG-dicts.json",
             "image_file": datasets_path+"datasets/vg/image_data.json",

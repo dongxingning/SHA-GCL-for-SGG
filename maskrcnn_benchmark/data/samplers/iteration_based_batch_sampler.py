@@ -9,9 +9,9 @@ class IterationBasedBatchSampler(BatchSampler):
     """
 
     def __init__(self, batch_sampler, num_iterations, start_iter=0):
-        self.batch_sampler = batch_sampler
-        self.num_iterations = num_iterations
-        self.start_iter = start_iter
+        self.batch_sampler = batch_sampler   #7215+1=7216
+        self.num_iterations = num_iterations  #60000
+        self.start_iter = start_iter  #0
 
     def __iter__(self):
         iteration = self.start_iter
