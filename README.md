@@ -133,8 +133,14 @@ CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --master_port 10025 --
 If you want to get more training models in our paper, please email me at ```dongxingning1998@gmail.com```.
 
 ## Citation
-
-
+```bash
+@article{dong2022stacked,
+  title={Stacked Hybrid-Attention and Group Collaborative Learning for Unbiased Scene Graph Generation},
+  author={Dong, Xingning and Gan, Tian and Song, Xuemeng and Wu, Jianlong and Cheng, Yuan and Nie, Liqiang},
+  journal={arXiv preprint arXiv:2203.09811},
+  year={2022}
+}
+```
 
 We welcome you to commit issue or contact us (E-mail: ```dongxingning1998@gmail.com```) if you have any problem when reading the paper or reproducing the code.
 
