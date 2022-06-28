@@ -134,10 +134,11 @@ If you want to get more training models in our paper, please email me at ```dong
 
 ## Citation
 ```bash
-@article{dong2022stacked,
+@inproceedings{dong2022stacked,
   title={Stacked Hybrid-Attention and Group Collaborative Learning for Unbiased Scene Graph Generation},
   author={Dong, Xingning and Gan, Tian and Song, Xuemeng and Wu, Jianlong and Cheng, Yuan and Nie, Liqiang},
-  journal={arXiv preprint arXiv:2203.09811},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={19427--19436},
   year={2022}
 }
 ```
